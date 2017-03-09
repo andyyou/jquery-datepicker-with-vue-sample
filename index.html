@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vue Timepicker</title>
+
+  <script src="assets/javascripts/jquery.js"></script>
+  <script src="assets/javascripts/vue.js"></script>
+  <script src="assets/javascripts/datepicker.js"></script>
+  <script src="assets/javascripts/i18n/datepicker.en.js"></script>
+  <link rel="stylesheet" href="assets/styles/datepicker.css">
+  <style>
+    .result {
+      color: rgba(0, 0, 0, .7);
+    }
+    hr {
+      border: none;
+      border-top: 1px solid rgba(0, 0, 0, .12);
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="root">
+    <select v-model="day">
+      <option v-for="weekday in weekdays" :value="weekday">{{weekday}}</option>
+    </select>
+    <input type='text' class="datepicker-here" ref="datepicker" v-model="time" v-datepicker/>
+    <button @click.stop.prevent="add">Add</button>
+    <div class="result">
+      <hr>
+      Weekday: {{day}}
+      <br>
+      Time: {{time}}
+
+      <div v-for="row in rows">{{row.day}} - {{row.time}}</div>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('load', function (e) {
+
+      Vue.directive('datepicker', {
+        bind: function (el, binding, vnode) {
+          var self = this
+          $(el).datepicker({
+            onSelect: function (formattedDate, date, inst) {
+              console.log(formattedDate)
+              vnode.context.time = formattedDate
+            }
+          })
+        }
+      })
+
+      new Vue({
+        el: '#root',
+        data: {
+          weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          day: 'Mon',
+          time: '',
+          rows: []
+        },
+        methods: {
+          add: function () {
+            this.rows.push({
+              day: this.day,
+              time: this.time
+            })
+          }
+        }
+      })
+    })
+    
+  </script>
+
+</body>
+</html>
